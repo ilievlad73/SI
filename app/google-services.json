@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1028602230789",
+    "project_id": "si-project-f9475",
+    "storage_bucket": "si-project-f9475.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1028602230789:android:4b2096d4163ee5fc6f446c",
+        "android_client_info": {
+          "package_name": "com.example.si"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1028602230789-t4b7ur7p7tvivgn0bo0jijjnv5e9l7gj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKWWsM47kL8lf68yCa3YNoOsxEJdvtqN0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1028602230789-t4b7ur7p7tvivgn0bo0jijjnv5e9l7gj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
