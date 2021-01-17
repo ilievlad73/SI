@@ -59,18 +59,18 @@ class Authentication : AppCompatActivity() {
                         if (doc != null) {
                             Log.d(this.localClassName, "Doc data: ${doc.data}")
                             // store user details
-                            val user = doc.toObject(User::class.java);
-
-                            SavedPreferences.setUID(this, user!!.uid)
-                            SavedPreferences.setEmail(this, user.email)
-                            user!!.lastName?.let { SavedPreferences.setLastName(this, it) }
-                            user!!.firstName?.let { SavedPreferences.setFirstName(this, it) }
-                            user!!.address?.let { SavedPreferences.setAddress(this, it) }
-                            user!!.cnp?.let { SavedPreferences.setCNP(this, it) }
-                            user!!.files?.let { SavedPreferences.setFiles(this, it) }
-
-                            startActivity(Intent(this, Home::class.java))
-                            finish()
+                            val user = doc.toObject(User::class.java) as User;
+                            SavedPreferences.set(this, user)
+                            // maybe finish account configuration
+                            if (SavedPreferences.isAccountConfigurationNeeded(this)) {
+                                startActivityForResult(
+                                    Intent(this, AccountManagement::class.java),
+                                    Configs.ACCOUNT_UPDATE_SUCCESS_REQUEST_CODE
+                                )
+                            } else {
+                                startActivity(Intent(this, Home::class.java))
+                                finish()
+                            }
                         } else {
                             Log.d(this.localClassName, "No such document")
                         }
@@ -95,6 +95,11 @@ class Authentication : AppCompatActivity() {
         if (requestCode === Configs.SIGN_UP_SUCCESS_REQUEST_CODE) {
             Log.d(this.localClassName, "Sign up activity returned successfully.")
             authentication_progress_bar.visibility = View.VISIBLE
+        }
+
+        if(requestCode === Configs.ACCOUNT_UPDATE_SUCCESS_REQUEST_CODE) {
+            Log.d(this.localClassName, "Account management activity returned successfully.")
+            // this will start anyway due to on start behaviour
         }
     }
 }

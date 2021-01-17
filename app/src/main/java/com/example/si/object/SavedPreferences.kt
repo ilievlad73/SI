@@ -3,6 +3,7 @@ package com.example.si.`object`
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
+import com.example.si.model.User
 
 object SavedPreferences {
 
@@ -50,6 +51,9 @@ object SavedPreferences {
 
     fun getFiles(context: Context): ArrayList<String> {
         val files = getSharedPreferences(context)!!.getString(FILES_KEY, "")!!
+
+        return ArrayList<String>(0)
+
         return files.split(",") as ArrayList<String>
     }
 
@@ -70,4 +74,57 @@ object SavedPreferences {
         setAddress(context, "")
         setFiles(context, ArrayList<String>(0))
     }
+
+    fun set(context: Context, user: User) {
+        setUID(context, user!!.uid)
+        setEmail(context, user.email)
+        user!!.lastName?.let { setLastName(context, it) }
+        user!!.firstName?.let { setFirstName(context, it) }
+        user!!.address?.let { setAddress(context, it) }
+        user!!.cnp?.let { setCNP(context, it) }
+        user!!.files?.let { setFiles(context, it) }
+    }
+
+    fun get(context: Context): User {
+        val email = getEmail(context)
+        val uid = getUId(context)
+        val lastName = getLastName(context)
+        val firstName = getFirstName(context)
+        val address = getAddress(context)
+        val files = getFiles(context)
+        val cnp = getCNP(context)
+
+        return User(uid, email, firstName, lastName, cnp, address, files)
+    }
+
+    fun isAccountConfigurationNeeded(context: Context): Boolean {
+        if (getEmail(context).isEmpty()) {
+            return true
+        }
+
+        if (getFirstName(context).isEmpty()) {
+            return true
+        }
+
+        if (getLastName(context).isEmpty()) {
+            return true
+        }
+
+        if (getAddress(context).isEmpty()) {
+            return true
+        }
+
+
+        if (getCNP(context).isEmpty()) {
+            return true
+        }
+
+//        if (getFiles(context).isEmpty()) {
+//            return true
+//        }
+
+        return false
+    }
+
+
 }
