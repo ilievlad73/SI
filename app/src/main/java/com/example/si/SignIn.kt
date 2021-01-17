@@ -9,9 +9,7 @@ import com.example.si.`object`.Configs
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import kotlinx.android.synthetic.main.activity_authentication.*
 import kotlinx.android.synthetic.main.activity_sign_in.*
-import kotlinx.android.synthetic.main.activity_sign_in.sign_in_button
 
 class SignIn : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
@@ -26,8 +24,9 @@ class SignIn : AppCompatActivity() {
 
         // sing in button
         sign_in_button.setOnClickListener { _: View? ->
-            setResult(Configs.SIGN_IN_SUCCESS_REQUEST_CODE)
-            finish()
+            val password = password_edit_text.text.toString()
+            val email = email_edit_text.text.toString()
+            signIn(email, password)
         }
     }
 
@@ -38,12 +37,13 @@ class SignIn : AppCompatActivity() {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(this.localClassName, "signInWithEmail:success")
                     val user: FirebaseUser = firebaseAuth.getCurrentUser()!!
-                    startActivity(Intent(this, Home::class.java))
+                    setResult(Configs.SIGN_IN_SUCCESS_REQUEST_CODE)
                     finish()
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(this.localClassName, "signInWithEmail:failure", task.exception)
-//                        updateUI(null)
+                    setResult(Configs.SIGN_IN_ERROR_REQUEST_CODE)
+                    finish()
                 }
             }
     }
