@@ -54,9 +54,16 @@
             android:hint="Type your address..." />
 
         <Button
+            android:id="@+id/select_files_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select files" />
+
+        <Button
             android:id="@+id/finish_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
             android:text="Submit" />
 
     </LinearLayout>

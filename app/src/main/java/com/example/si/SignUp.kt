@@ -47,7 +47,7 @@ class SignUp : AppCompatActivity() {
                     val name = user.displayName
                     val email = user.email!!
                     val uid = user.uid
-                    val userModel = User(uid, email, name)
+                    val userModel = User(uid, email, Configs.BASIC_ROLE)
 
                     // add user model into firebase
                     firebaseFirestore.collection(Configs.USER_COLLECTION).document(uid)

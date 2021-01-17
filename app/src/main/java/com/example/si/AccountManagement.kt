@@ -10,6 +10,7 @@ import com.example.si.`object`.SavedPreferences
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.android.synthetic.main.activity_authentication.*
 import kotlinx.android.synthetic.main.activity_finish_account_configuration.*
 
 class AccountManagement : AppCompatActivity() {
@@ -33,6 +34,17 @@ class AccountManagement : AppCompatActivity() {
         last_name_edit_text.setText(SavedPreferences.getLastName(this))
         address_edit_text.setText(SavedPreferences.getAddress(this))
         cnp_edit_text.setText(SavedPreferences.getCNP(this))
+
+        // select file button
+        select_files_button.setOnClickListener { _: View? ->
+            var intent = Intent();
+            intent.type = "image/*";
+            intent.action = Intent.ACTION_GET_CONTENT
+            startActivityForResult(
+                Intent.createChooser(intent, "Select Files"),
+                Configs.SELECT_FILES_SUCCESS_REQUEST_CODE
+            )
+        }
 
         // sign_up_button
         finish_button.setOnClickListener { _: View? ->
@@ -62,6 +74,13 @@ class AccountManagement : AppCompatActivity() {
                     setResult(Configs.ACCOUNT_UPDATE_ERROR_REQUEST_CODE)
                     finish()
                 }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode === Configs.SELECT_FILES_SUCCESS_REQUEST_CODE) {
+            Log.d(this.localClassName, "Select files activity returned successfully.")
         }
     }
 }

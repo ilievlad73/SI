@@ -1,8 +1,9 @@
 package com.example.si.model
 
 data class User(
-    val uid:String = "",
+    val uid: String = "",
     val email: String = "",
+    val role: String = "",
     var firstName: String? = "",
     var lastName: String? = "",
     var cnp: String? = "",

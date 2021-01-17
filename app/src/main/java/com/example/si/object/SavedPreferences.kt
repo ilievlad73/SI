@@ -14,6 +14,7 @@ object SavedPreferences {
     const val CNP_KEY = "cnp"
     const val ADDRESS_KEY = "address"
     const val FILES_KEY = "key"
+    const val ROLE_KEY = "role"
 
     private fun getSharedPreferences(ctx: Context?): SharedPreferences? =
         PreferenceManager.getDefaultSharedPreferences(ctx)
@@ -23,6 +24,9 @@ object SavedPreferences {
 
     fun getEmail(context: Context) = getSharedPreferences(context)!!.getString(EMAIL_KEY, "")!!
     fun setEmail(context: Context, email: String) = editor(context, EMAIL_KEY, email)
+
+    fun getRole(context: Context) = getSharedPreferences(context)!!.getString(ROLE_KEY, "")!!
+    fun setRole(context: Context, role: String) = editor(context, ROLE_KEY, role)
 
     fun getFirstName(context: Context) = getSharedPreferences(context)!!.getString(
         FIRST_NAME_KEY,
@@ -67,6 +71,7 @@ object SavedPreferences {
 
     fun reset(context: Context) {
         setEmail(context, "")
+        setRole(context, "")
         setFirstName(context, "")
         setLastName(context, "")
         setUID(context, "")
@@ -77,6 +82,7 @@ object SavedPreferences {
 
     fun set(context: Context, user: User) {
         setUID(context, user!!.uid)
+        setRole(context, user.role)
         setEmail(context, user.email)
         user!!.lastName?.let { setLastName(context, it) }
         user!!.firstName?.let { setFirstName(context, it) }
@@ -87,6 +93,7 @@ object SavedPreferences {
 
     fun get(context: Context): User {
         val email = getEmail(context)
+        val role = getRole(context)
         val uid = getUId(context)
         val lastName = getLastName(context)
         val firstName = getFirstName(context)
@@ -94,7 +101,7 @@ object SavedPreferences {
         val files = getFiles(context)
         val cnp = getCNP(context)
 
-        return User(uid, email, firstName, lastName, cnp, address, files)
+        return User(uid, email, role, firstName, lastName, cnp, address, files)
     }
 
     fun isAccountConfigurationNeeded(context: Context): Boolean {
