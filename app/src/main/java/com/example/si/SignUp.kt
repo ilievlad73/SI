@@ -47,18 +47,18 @@ class SignUp : AppCompatActivity() {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(this.localClassName, "createUserWithEmail:success")
                     // construct firestore user model
-                    val user: FirebaseUser = firebaseAuth.getCurrentUser()!!
-                    val name = user.displayName!!
+                    val user: FirebaseUser = firebaseAuth.currentUser!!
+                    val name = user.displayName
                     val email = user.email!!
                     val photoUrl = user.photoUrl.toString()
                     val uid = user.uid
                     val userModel = User(uid, email, name, photoUrl)
-                    
+
                     // add user model into firebase
-                    firebaseFirestore.collection(Configs.USER_COLLECTION)
-                        .add(userModel)
+                    firebaseFirestore.collection(Configs.USER_COLLECTION).document(uid)
+                        .set(userModel)
                         .addOnSuccessListener { docSnap ->
-                            Log.d(this.localClassName, "Snapshot added with ID: " + docSnap.id)
+                            Log.d(this.localClassName, "Snapshot added with ID: $docSnap")
                             setResult(Configs.SIGN_IN_SUCCESS_REQUEST_CODE)
                             finish()
                         }
