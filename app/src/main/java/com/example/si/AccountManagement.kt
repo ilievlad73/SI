@@ -37,13 +37,11 @@ class AccountManagement : AppCompatActivity() {
 
         // select file button
         select_files_button.setOnClickListener { _: View? ->
-            var intent = Intent();
-            intent.type = "image/*";
-            intent.action = Intent.ACTION_GET_CONTENT
-            startActivityForResult(
-                Intent.createChooser(intent, "Select Files"),
-                Configs.SELECT_FILES_SUCCESS_REQUEST_CODE
-            )
+            val getIntent = Intent()
+            getIntent.type = "image/*";
+            getIntent.action = Intent.ACTION_GET_CONTENT;
+            val chooserIntent = Intent.createChooser(getIntent, "Select file")
+            startActivityForResult(chooserIntent, Configs.SELECT_FILES_SUCCESS_REQUEST_CODE);
         }
 
         // sign_up_button
