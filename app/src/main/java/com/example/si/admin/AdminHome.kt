@@ -1,9 +1,12 @@
-package com.example.si
+package com.example.si.admin
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.si.AccountManagement
+import com.example.si.Authentication
+import com.example.si.R
 import com.example.si.`object`.Configs
 import com.example.si.`object`.SavedPreferences
 import com.google.firebase.auth.FirebaseAuth
@@ -34,6 +37,14 @@ class AdminHome : AppCompatActivity() {
             startActivityForResult(
                 Intent(this, AccountManagement::class.java),
                 Configs.ACCOUNT_UPDATE_SUCCESS_REQUEST_CODE
+            )
+        }
+
+        // CREATE PROGRAM
+        admin_create_program.setOnClickListener {
+            startActivityForResult(
+                Intent(this, CreateProgram::class.java),
+                Configs.CREATE_PROGRAM_SUCCESS_REQUEST_CODE
             )
         }
 

@@ -9,6 +9,8 @@ object Configs {
     const val ACCOUNT_UPDATE_ERROR_REQUEST_CODE = 12455
     const val USER_COLLECTION = "users"
     const val SELECT_FILES_SUCCESS_REQUEST_CODE = 1
+    const val CREATE_PROGRAM_SUCCESS_REQUEST_CODE = 21312
+    const val CREATE_PROGRAM_ERROR_REQUEST_CODE = 1231
     const val BASIC_ROLE = "user"
     const val ADMIN_ROLE = "admin"
 }

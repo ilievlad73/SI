@@ -7,6 +7,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.example.si.`object`.Configs
 import com.example.si.`object`.SavedPreferences
+import com.example.si.admin.AdminHome
 import com.example.si.model.Admin
 import com.example.si.model.User
 import com.google.firebase.FirebaseApp
@@ -114,6 +115,6 @@ class Authentication : AppCompatActivity() {
     }
 
     private fun isAdmin(role: String): Boolean {
-        return role.compareTo("admin") == 0
+        return role.compareTo(Configs.ADMIN_ROLE) == 0
     }
 }
