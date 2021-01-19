@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.preference.PreferenceManager
+import com.example.si.model.Admin
+import com.example.si.model.University
 import com.example.si.model.User
 import java.util.*
 import kotlin.collections.ArrayList
@@ -18,6 +20,8 @@ object SavedPreferences {
     const val ADDRESS_KEY = "address"
     const val FILES_KEY = "files"
     const val ROLE_KEY = "role"
+    const val ADMIN_UNIVERSITY_UID = "admin_university_uid"
+    const val ADMIN_UNIVERSITY_NAME = "admin_university_name"
 
     private fun getSharedPreferences(ctx: Context?): SharedPreferences? =
         PreferenceManager.getDefaultSharedPreferences(ctx)
@@ -76,6 +80,18 @@ object SavedPreferences {
         }
     }
 
+    fun getUniversityUId(context: Context) =
+        getSharedPreferences(context)!!.getString(ADMIN_UNIVERSITY_UID, "")!!
+
+    fun setUniversityUId(context: Context, universityUId: String) =
+        editor(context, ADMIN_UNIVERSITY_UID, universityUId)
+
+    fun getUniversityName(context: Context) =
+        getSharedPreferences(context)!!.getString(ADMIN_UNIVERSITY_NAME, "")!!
+
+    fun setUniversityName(context: Context, universityName: String) =
+        editor(context, ADMIN_UNIVERSITY_NAME, universityName)
+
     fun reset(context: Context) {
         setEmail(context, "")
         setRole(context, "")
@@ -85,6 +101,8 @@ object SavedPreferences {
         setCNP(context, "")
         setAddress(context, "")
         setFiles(context, emptyList())
+        setUniversityName(context, "")
+        setUniversityUId(context, "")
     }
 
     fun set(context: Context, user: User) {
@@ -98,6 +116,19 @@ object SavedPreferences {
         user!!.files?.let { setFiles(context, it) }
     }
 
+    fun setAdmin(context: Context, admin: Admin) {
+        setUID(context, admin!!.uid)
+        setRole(context, admin.role)
+        setEmail(context, admin.email)
+        admin!!.lastName?.let { setLastName(context, it) }
+        admin!!.firstName?.let { setFirstName(context, it) }
+        admin!!.address?.let { setAddress(context, it) }
+        admin!!.cnp?.let { setCNP(context, it) }
+        admin!!.files?.let { setFiles(context, it) }
+        setUniversityUId(context, admin.university!!.uid)
+        setUniversityName(context, admin.university!!.name)
+    }
+
     fun get(context: Context): User {
         val email = getEmail(context)
         val role = getRole(context)
@@ -109,6 +140,31 @@ object SavedPreferences {
         val cnp = getCNP(context)
 
         return User(uid, email, role, firstName, lastName, cnp, address, files)
+    }
+
+    fun getAdmin(context: Context): Admin {
+        val email = getEmail(context)
+        val role = getRole(context)
+        val uid = getUId(context)
+        val lastName = getLastName(context)
+        val firstName = getFirstName(context)
+        val address = getAddress(context)
+        val files = getFiles(context)
+        val cnp = getCNP(context)
+        val universityUId = getUniversityUId(context)
+        var universityName = getUniversityName(context)
+
+        return Admin(
+            uid,
+            email,
+            role,
+            firstName,
+            lastName,
+            cnp,
+            address,
+            files,
+            University(universityUId, universityName)
+        )
     }
 
     fun isAccountConfigurationNeeded(context: Context): Boolean {

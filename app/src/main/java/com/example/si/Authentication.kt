@@ -7,6 +7,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.example.si.`object`.Configs
 import com.example.si.`object`.SavedPreferences
+import com.example.si.model.Admin
 import com.example.si.model.User
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
@@ -60,16 +61,25 @@ class Authentication : AppCompatActivity() {
                             Log.d(this.localClassName, "Doc data: ${doc.data}")
                             // store user details
                             val user = doc.toObject(User::class.java) as User;
-                            SavedPreferences.set(this, user)
-                            // maybe finish account configuration
-                            if (SavedPreferences.isAccountConfigurationNeeded(this)) {
-                                startActivityForResult(
-                                    Intent(this, AccountManagement::class.java),
-                                    Configs.ACCOUNT_UPDATE_SUCCESS_REQUEST_CODE
-                                )
-                            } else {
-                                startActivity(Intent(this, Home::class.java))
+                            if (isAdmin(user.role)) {
+                                val admin = doc.toObject(Admin::class.java) as Admin
+                                SavedPreferences.setAdmin(this, admin)
+                                // home
+                                startActivity(Intent(this, AdminHome::class.java))
                                 finish()
+                            } else {
+                                SavedPreferences.set(this, user)
+                                // maybe finish account configuration
+                                if (SavedPreferences.isAccountConfigurationNeeded(this)) {
+                                    startActivityForResult(
+                                        Intent(this, AccountManagement::class.java),
+                                        Configs.ACCOUNT_UPDATE_SUCCESS_REQUEST_CODE
+                                    )
+                                } else {
+                                    // home
+                                    startActivity(Intent(this, Home::class.java))
+                                    finish()
+                                }
                             }
                         } else {
                             Log.d(this.localClassName, "No such document")
@@ -97,9 +107,13 @@ class Authentication : AppCompatActivity() {
             authentication_progress_bar.visibility = View.VISIBLE
         }
 
-        if(requestCode === Configs.ACCOUNT_UPDATE_SUCCESS_REQUEST_CODE) {
+        if (requestCode === Configs.ACCOUNT_UPDATE_SUCCESS_REQUEST_CODE) {
             Log.d(this.localClassName, "Account management activity returned successfully.")
             // this will start anyway due to on start behaviour
         }
+    }
+
+    private fun isAdmin(role: String): Boolean {
+        return role.compareTo("admin") == 0
     }
 }
