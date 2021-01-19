@@ -8,15 +8,21 @@ import android.provider.OpenableColumns
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.si.`object`.Configs
 import com.example.si.`object`.SavedPreferences
+import com.example.si.adapters.FilesAdapter
+import com.example.si.uitl.toast
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import kotlinx.android.synthetic.main.activity_finish_account_configuration.*
-import java.io.File
+import kotlinx.android.synthetic.main.activity_account_management.*
+import kotlin.collections.ArrayList
+
+
 
 
 class AccountManagement : AppCompatActivity() {
@@ -24,10 +30,12 @@ class AccountManagement : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var firebaseFirestore: FirebaseFirestore;
     private lateinit var firebaseStorageReference: StorageReference;
+    private lateinit var files: ArrayList<String>;
+    private lateinit var filesAdapter: FilesAdapter;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_finish_account_configuration)
+        setContentView(R.layout.activity_account_management)
 
         // Init firebase auth
         FirebaseApp.initializeApp(this)
@@ -38,6 +46,9 @@ class AccountManagement : AppCompatActivity() {
 
         // Init storage
         firebaseStorageReference = FirebaseStorage.getInstance().reference
+
+        // Init files
+        files = SavedPreferences.getFiles(this)
 
         // check if previous settings have been made
         first_name_edit_text.setText(SavedPreferences.getFirstName(this))
@@ -65,6 +76,7 @@ class AccountManagement : AppCompatActivity() {
             currentUser.firstName = first_name_edit_text.text.toString()
             currentUser.lastName = last_name_edit_text.text.toString()
             currentUser.cnp = cnp_edit_text.text.toString()
+            currentUser.files = files
 
             // add user model into firebase
             firebaseFirestore.collection(Configs.USER_COLLECTION).document(currentUser.uid)
@@ -76,6 +88,7 @@ class AccountManagement : AppCompatActivity() {
                     SavedPreferences.setFirstName(this, first_name_edit_text.text.toString())
                     SavedPreferences.setLastName(this, last_name_edit_text.text.toString())
                     SavedPreferences.setCNP(this, cnp_edit_text.text.toString())
+                    SavedPreferences.setFiles(this, files.distinct())
                     // return
                     setResult(Configs.ACCOUNT_UPDATE_SUCCESS_REQUEST_CODE)
                     finish()
@@ -86,6 +99,13 @@ class AccountManagement : AppCompatActivity() {
                     finish()
                 }
         }
+
+        // Init friends list
+        val layoutManager = LinearLayoutManager(this)
+        filesAdapter = FilesAdapter(files, this)
+        files_recycler_view.layoutManager = layoutManager
+        files_recycler_view.itemAnimator = DefaultItemAnimator()
+        files_recycler_view.adapter = filesAdapter
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -96,24 +116,27 @@ class AccountManagement : AppCompatActivity() {
             if (data != null && data.data != null) {
                 val uri: Uri? = data.data
                 if (uri != null) {
-                    Log.d(this.localClassName, uri.toString())
+                    Log.d(this.localClassName, "Uri found ${uri.toString()}")
 //                    https://stackoverflow.com/questions/36329379/file-not-found-exception-path-from-uri
 //                    https://stackoverflow.com/questions/20067508/get-real-path-from-uri-android-kitkat-new-storage-access-framework/20413475#20413475
 //                    https://stackoverflow.com/questions/59123162/android-kotlin-getting-a-filenotfoundexception-with-filename-chosen-from-file-p
-
                     val stream = contentResolver.openInputStream(uri)
                     if (stream != null) {
-                        Log.d(this.localClassName, "File found ${getFileName(uri)}")
-
-                        val ref = firebaseStorageReference.child("test")
-
+                        val fileName = getFileName(uri)!!
+                        Log.d(this.localClassName, "File found $fileName")
+                        val ref = firebaseStorageReference.child(SavedPreferences.getUId(this))
+                            .child(fileName)
                         val uploadTask = ref.putStream(stream)
                         uploadTask.addOnFailureListener {
                             // Handle unsuccessful uploads
                             Log.d(this.localClassName, "File upload failed.")
+                            this.toast("File upload failed.")
                         }.addOnSuccessListener { taskSnapshot ->
                             // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
                             Log.d(this.localClassName, "File uploaded successfully.")
+                            this.toast("File uploaded successfully.")
+                            // sync file names
+                            files.add(fileName)
                         }
                     } else {
                         Log.d(this.localClassName, "File not found")

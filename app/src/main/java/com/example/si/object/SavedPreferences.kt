@@ -2,8 +2,11 @@ package com.example.si.`object`
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.preference.PreferenceManager
 import com.example.si.model.User
+import java.util.*
+import kotlin.collections.ArrayList
 
 object SavedPreferences {
 
@@ -13,7 +16,7 @@ object SavedPreferences {
     const val UID_KEY = "uid"
     const val CNP_KEY = "cnp"
     const val ADDRESS_KEY = "address"
-    const val FILES_KEY = "key"
+    const val FILES_KEY = "files"
     const val ROLE_KEY = "role"
 
     private fun getSharedPreferences(ctx: Context?): SharedPreferences? =
@@ -56,17 +59,21 @@ object SavedPreferences {
     fun getFiles(context: Context): ArrayList<String> {
         val files = getSharedPreferences(context)!!.getString(FILES_KEY, "")!!
 
-        return ArrayList<String>(0)
-
-        return files.split(",") as ArrayList<String>
+        return ArrayList(files.split(","))
     }
 
-    fun setFiles(context: Context, files: ArrayList<String>) {
-        val sb = StringBuilder()
-        for (i in 0 until files.size) {
-            sb.append(files.get(i)).append(",")
+    fun setFiles(context: Context, files: List<String>) {
+        if (files.isNotEmpty()) {
+            val sb = StringBuilder()
+            val size = files.size
+            for (i in 0 until size - 1) {
+                sb.append(files.get(i)).append(",")
+            }
+            sb.append(files.get(size - 1))
+            editor(context, FILES_KEY, sb.toString())
+        } else {
+            editor(context, FILES_KEY, "")
         }
-        editor(context, FILES_KEY, sb.toString())
     }
 
     fun reset(context: Context) {
@@ -77,7 +84,7 @@ object SavedPreferences {
         setUID(context, "")
         setCNP(context, "")
         setAddress(context, "")
-        setFiles(context, ArrayList<String>(0))
+        setFiles(context, emptyList())
     }
 
     fun set(context: Context, user: User) {
@@ -126,9 +133,9 @@ object SavedPreferences {
             return true
         }
 
-//        if (getFiles(context).isEmpty()) {
-//            return true
-//        }
+        if (getFiles(context).isEmpty()) {
+            return true
+        }
 
         return false
     }

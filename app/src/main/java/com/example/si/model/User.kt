@@ -8,5 +8,5 @@ data class User(
     var lastName: String? = "",
     var cnp: String? = "",
     var address: String? = "",
-    var files: ArrayList<String>? = ArrayList<String>(0)
+    var files: List<String>? = ArrayList<String>(0)
 )

@@ -59,12 +59,19 @@
             android:layout_height="wrap_content"
             android:text="Select files" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/files_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <Button
             android:id="@+id/finish_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="100dp"
             android:text="Submit" />
+
+
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
