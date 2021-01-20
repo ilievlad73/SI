@@ -4,30 +4,63 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".Home">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/welcome_text_view"
-            style="@android:style/Widget.DeviceDefault.Light.TextView"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Welcome"
-            android:layout_margin="20dp"
-            android:textSize="20dp"
-            android:textStyle="bold" />
+            android:layout_height="60dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0">
+
+            <TextView
+                android:id="@+id/welcome_text_view"
+                style="@android:style/Widget.DeviceDefault.Light.TextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:text="Welcome"
+                android:textSize="18dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Select Field Of Study"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+            <Spinner
+                android:id="@+id/user_home_field_of_study_spinner"
+                android:layout_width="match_parent"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/programs_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="550dp" />
     </LinearLayout>
+
 
     <Button
         android:id="@+id/setting_button"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="@android:color/black"
         android:foreground="?android:attr/selectableItemBackground"
@@ -36,15 +69,13 @@
         android:textColor="@android:color/holo_orange_light"
         android:textSize="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.93" />
+        app:layout_constraintVertical_bias="0.931" />
 
     <Button
         android:id="@+id/logout_button"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="@android:color/black"
         android:foreground="?android:attr/selectableItemBackground"
@@ -53,10 +84,11 @@
         android:textColor="@android:color/holo_orange_light"
         android:textSize="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/setting_button"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+

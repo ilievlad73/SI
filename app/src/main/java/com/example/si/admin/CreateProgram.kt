@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.activity_create_program.*
 class CreateProgram : AppCompatActivity() {
 
     private lateinit var firebaseFirestore: FirebaseFirestore;
-    private var fieldsOfStudy: ArrayList<FieldOfStudy> = ArrayList<FieldOfStudy>(64);
+    private var fieldsOfStudy: ArrayList<FieldOfStudy> = ArrayList(64);
     private lateinit var fieldsOfStudySpinner: Spinner;
     private var selectedFieldOfStudy: FieldOfStudy = FieldOfStudy();
 
@@ -39,8 +39,8 @@ class CreateProgram : AppCompatActivity() {
 
             val currentProgram = Program()
             currentProgram.city = program_city_edit_text.text.toString()
-            currentProgram.faculty_name = program_faculty_name_edit_text.text.toString()
-            currentProgram.tuition_fee = program_tuition_fee_edit_text.text.toString()
+            currentProgram.facultyName = program_faculty_name_edit_text.text.toString()
+            currentProgram.tuitionFee = program_tuition_fee_edit_text.text.toString()
             currentProgram.cycle = program_cycle_edit_text.text.toString()
             currentProgram.description = program_description_edit_text.text.toString()
             currentProgram.name = program_name_edit_text.text.toString()
@@ -80,7 +80,7 @@ class CreateProgram : AppCompatActivity() {
     }
 
     private fun initFieldsOfStudySpinner(fieldsOfStudyName: List<String>) {
-        fieldsOfStudySpinner = findViewById(R.id.field_of_study_spinner)
+        fieldsOfStudySpinner = findViewById(R.id.admin_create_account_field_of_study_spinner)
         val dataAdapter =
             ArrayAdapter(this, android.R.layout.simple_spinner_item, fieldsOfStudyName)
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

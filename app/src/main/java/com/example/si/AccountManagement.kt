@@ -137,6 +137,7 @@ class AccountManagement : AppCompatActivity() {
                             this.toast("File uploaded successfully.")
                             // sync file names
                             files.add(fileName)
+                            filesAdapter.notifyDataSetChanged()
                         }
                     } else {
                         Log.d(this.localClassName, "File not found")

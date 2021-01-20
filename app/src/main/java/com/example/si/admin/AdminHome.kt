@@ -9,6 +9,7 @@ import com.example.si.Authentication
 import com.example.si.R
 import com.example.si.`object`.Configs
 import com.example.si.`object`.SavedPreferences
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_admin_home.*
@@ -21,6 +22,10 @@ class AdminHome : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_admin_home)
+
+        // Init firebase auth
+        FirebaseApp.initializeApp(this)
+        firebaseAuth = FirebaseAuth.getInstance()
 
         // LOGOUT BUTTON
         admin_logout_button.setOnClickListener {
