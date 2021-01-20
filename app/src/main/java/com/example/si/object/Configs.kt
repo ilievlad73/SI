@@ -8,6 +8,8 @@ object Configs {
     const val ACCOUNT_UPDATE_SUCCESS_REQUEST_CODE = 111
     const val ACCOUNT_UPDATE_ERROR_REQUEST_CODE = 12455
     const val USER_COLLECTION = "users"
+    const val FIELD_OF_STUDY_COLLECTION = "field_of_study"
+    const val PROGRAMS_COLLECTION = "programs"
     const val SELECT_FILES_SUCCESS_REQUEST_CODE = 1
     const val CREATE_PROGRAM_SUCCESS_REQUEST_CODE = 21312
     const val CREATE_PROGRAM_ERROR_REQUEST_CODE = 1231

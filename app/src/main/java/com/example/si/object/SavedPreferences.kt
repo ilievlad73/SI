@@ -92,6 +92,10 @@ object SavedPreferences {
     fun setUniversityName(context: Context, universityName: String) =
         editor(context, ADMIN_UNIVERSITY_NAME, universityName)
 
+    fun getUniversity(context: Context): University {
+        return University(getUniversityUId(context), getUniversityName(context))
+    }
+
     fun reset(context: Context) {
         setEmail(context, "")
         setRole(context, "")
@@ -196,5 +200,19 @@ object SavedPreferences {
         return false
     }
 
+    fun isAdmin(role: String): Boolean {
+        if (role.compareTo(Configs.ADMIN_ROLE) === 0)
+            return true
+
+        return false
+    }
+
+    fun isAdmin(context: Context): Boolean {
+        var role = this.getRole(context)
+        if (role.compareTo(Configs.ADMIN_ROLE) === 0)
+            return true
+
+        return false
+    }
 
 }

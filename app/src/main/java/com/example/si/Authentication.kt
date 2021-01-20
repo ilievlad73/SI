@@ -62,7 +62,7 @@ class Authentication : AppCompatActivity() {
                             Log.d(this.localClassName, "Doc data: ${doc.data}")
                             // store user details
                             val user = doc.toObject(User::class.java) as User;
-                            if (isAdmin(user.role)) {
+                            if (SavedPreferences.isAdmin(user.role)) {
                                 val admin = doc.toObject(Admin::class.java) as Admin
                                 SavedPreferences.setAdmin(this, admin)
                                 // home
@@ -90,8 +90,14 @@ class Authentication : AppCompatActivity() {
                         Log.d(this.localClassName, "fetch failed with ", exception)
                     }
             } else {
-                startActivity(Intent(this, Home::class.java))
-                finish()
+                if (SavedPreferences.isAdmin(this)) {
+                    startActivity(Intent(this, AdminHome::class.java))
+                    finish()
+                } else {
+                    startActivity(Intent(this, Home::class.java))
+                    finish()
+                }
+
             }
         }
     }
@@ -112,9 +118,5 @@ class Authentication : AppCompatActivity() {
             Log.d(this.localClassName, "Account management activity returned successfully.")
             // this will start anyway due to on start behaviour
         }
-    }
-
-    private fun isAdmin(role: String): Boolean {
-        return role.compareTo(Configs.ADMIN_ROLE) == 0
     }
 }
