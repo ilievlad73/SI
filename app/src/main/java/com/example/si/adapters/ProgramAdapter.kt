@@ -57,14 +57,14 @@ class ProgramAdapter(
             facultyName.text = "${facultyName.text}${program.facultyName}"
 
             applyButton.setOnClickListener {
-                var application = Application(SavedPreferences.get(context), program, "")
+                var application = Application(SavedPreferences.get(context), program, "", "pending")
                 firestore.collection(Configs.APPLICATION_COLLECTION).add(application)
                     .addOnSuccessListener { doc ->
                         Log.d(TAG, "DocumentSnapshot written with ID: ${doc.id}")
                         firestore.collection(Configs.APPLICATION_COLLECTION)
                             .document(doc.id).update("uid", doc.id)
                             .addOnSuccessListener {
-                                Log.d(TAG,  "Doc successfully updated!")
+                                Log.d(TAG, "Doc successfully updated!")
                                 context.toast("Request send!")
                             }
                             .addOnFailureListener { e ->

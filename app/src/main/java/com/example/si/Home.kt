@@ -72,9 +72,6 @@ class Home : AppCompatActivity() {
         programs_recycler_view.layoutManager = layoutManager
         programs_recycler_view.itemAnimator = DefaultItemAnimator()
         programs_recycler_view.adapter = programsAdapter
-
-        // fetch programs
-        fetchPrograms()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -91,8 +88,7 @@ class Home : AppCompatActivity() {
             ArrayAdapter(this, android.R.layout.simple_spinner_item, fieldsOfStudyName)
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         fieldsOfStudySpinner.adapter = dataAdapter;
-        fieldsOfStudySpinner.onItemSelectedListener =
-            SpinnerItemSelectedListener(fieldsOfStudy, selectedFieldOfStudy)
+        fieldsOfStudySpinner.onItemSelectedListener = SpinnerItemSelectedListener()
     }
 
     private fun fetchFieldsOfStudy() {
@@ -113,7 +109,8 @@ class Home : AppCompatActivity() {
     }
 
     private fun fetchPrograms() {
-        firebaseFirestore.collection(Configs.PROGRAMS_COLLECTION).whereEqualTo("fieldOfStudy.uid", "ZmAMukSw32RofDmaComD").get()
+        firebaseFirestore.collection(Configs.PROGRAMS_COLLECTION)
+            .whereEqualTo("fieldOfStudy.uid", selectedFieldOfStudy.uid).get()
             .addOnSuccessListener { result ->
                 for (document in result) {
                     Log.d(this.localClassName, "${document.id} => ${document.data}")
@@ -127,16 +124,18 @@ class Home : AppCompatActivity() {
             }
     }
 
-    class SpinnerItemSelectedListener(
-        private val fieldsOfStudy: List<FieldOfStudy>,
-        private val fieldOfStudy: FieldOfStudy
-    ) : AdapterView.OnItemSelectedListener {
+    inner class SpinnerItemSelectedListener() : AdapterView.OnItemSelectedListener {
+        private val TAG = "SPINNER FIELD OF STUDY"
 
         override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
             // An item was selected. You can retrieve the selected item using
             // parent.getItemAtPosition(pos)
-            fieldOfStudy.name = fieldsOfStudy[pos].name
-            fieldOfStudy.uid = fieldsOfStudy[pos].uid
+            Log.d(TAG, fieldsOfStudy[pos].name)
+            selectedFieldOfStudy.name = fieldsOfStudy[pos].name
+            selectedFieldOfStudy.uid = fieldsOfStudy[pos].uid
+            // reset list
+            programs.removeAll(programs)
+            fetchPrograms()
         }
 
         override fun onNothingSelected(parent: AdapterView<*>) {
