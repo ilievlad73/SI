@@ -25,6 +25,10 @@
         android:text="Faculty name: "
         android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/application_files_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/application_accept_button"

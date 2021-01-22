@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.si.R
 import com.example.si.`object`.Configs
@@ -16,6 +18,7 @@ import com.example.si.admin.AdminHome
 import com.example.si.model.Application
 import com.example.si.uitl.toast
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.android.synthetic.main.activity_account_management.*
 
 class ApplicationsAdapter(
     private var applications: List<Application>,
@@ -47,6 +50,8 @@ class ApplicationsAdapter(
             view.findViewById(R.id.application_program_faculty_name_text_view)
         var acceptButton: Button = view.findViewById(R.id.application_accept_button)
         var rejectButton: Button = view.findViewById(R.id.application_reject_button)
+        var filesRecyclerView: RecyclerView =
+            view.findViewById(R.id.application_files_recycler_view)
 
         fun bindApplication(application: Application) {
             programName.text = "${programName.text}${application.program.name}"
@@ -78,25 +83,15 @@ class ApplicationsAdapter(
                     }
             }
 
-//            applyButton.setOnClickListener {
-//                var application = Application(SavedPreferences.get(context), program, "")
-//                firestore.collection(Configs.APPLICATION_COLLECTION).add(application)
-//                    .addOnSuccessListener { doc ->
-//                        Log.d(TAG, "DocumentSnapshot written with ID: ${doc.id}")
-//                        firestore.collection(Configs.APPLICATION_COLLECTION)
-//                            .document(doc.id).update("uid", doc.id)
-//                            .addOnSuccessListener {
-//                                Log.d(TAG,  "Doc successfully updated!")
-//                                context.toast("Request send!")
-//                            }
-//                            .addOnFailureListener { e ->
-//                                Log.w(TAG, "Error updating document", e)
-//                            }
-//                    }
-//                    .addOnFailureListener { e ->
-//                        Log.w(TAG, "Error adding document", e)
-//                    }
-//            }
+            if (application.user.files?.isNotEmpty() == true) {
+                // Init files list
+                val layoutManager = LinearLayoutManager(context)
+                val filesAdapter =
+                    ApplicationFileAdapter(application.user.files!!, context, firestore)
+                filesRecyclerView.layoutManager = layoutManager
+                filesRecyclerView.itemAnimator = DefaultItemAnimator()
+                filesRecyclerView.adapter = filesAdapter
+            }
         }
     }
 }
