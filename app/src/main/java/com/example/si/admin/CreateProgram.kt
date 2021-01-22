@@ -106,7 +106,7 @@ class CreateProgram : AppCompatActivity() {
             }
     }
 
-    class SpinnerItemSelectedListener(
+    inner class SpinnerItemSelectedListener(
         private val fieldsOfStudy: List<FieldOfStudy>,
         private val fieldOfStudy: FieldOfStudy
     ) : AdapterView.OnItemSelectedListener {

@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.si.`object`.Configs
 import com.example.si.`object`.SavedPreferences
-import com.example.si.adapters.FilesAdapter
 import com.example.si.adapters.ProgramAdapter
 import com.example.si.model.FieldOfStudy
 import com.example.si.model.Program
@@ -101,7 +100,7 @@ class Home : AppCompatActivity() {
             .addOnSuccessListener { result ->
                 for (document in result) {
                     Log.d(this.localClassName, "${document.id} => ${document.data}")
-                    var fieldOfStudy = document.toObject(FieldOfStudy::class.java) as FieldOfStudy;
+                    val fieldOfStudy = document.toObject(FieldOfStudy::class.java) as FieldOfStudy;
                     fieldsOfStudy.add(fieldOfStudy)
                 }
                 selectedFieldOfStudy.name = fieldsOfStudy[0].name
@@ -114,11 +113,11 @@ class Home : AppCompatActivity() {
     }
 
     private fun fetchPrograms() {
-        firebaseFirestore.collection(Configs.PROGRAMS_COLLECTION).get()
+        firebaseFirestore.collection(Configs.PROGRAMS_COLLECTION).whereEqualTo("fieldOfStudy.uid", "ZmAMukSw32RofDmaComD").get()
             .addOnSuccessListener { result ->
                 for (document in result) {
                     Log.d(this.localClassName, "${document.id} => ${document.data}")
-                    var program = document.toObject(Program::class.java) as Program;
+                    val program = document.toObject(Program::class.java);
                     programs.add(program)
                 }
                 programsAdapter.notifyDataSetChanged()
