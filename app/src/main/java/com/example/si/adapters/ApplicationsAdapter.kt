@@ -1,6 +1,7 @@
 package com.example.si.adapters
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +12,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.si.R
 import com.example.si.`object`.Configs
 import com.example.si.`object`.SavedPreferences
+import com.example.si.admin.AdminHome
 import com.example.si.model.Application
+import com.example.si.uitl.toast
 import com.google.firebase.firestore.FirebaseFirestore
 
 class ApplicationsAdapter(
@@ -50,6 +53,30 @@ class ApplicationsAdapter(
             facultyName.text = "${facultyName.text}${application.program.facultyName}"
             userName.text =
                 "${userName.text}${application.user.lastName} ${application.user.firstName}"
+
+            acceptButton.setOnClickListener {
+                firestore.collection(Configs.APPLICATION_COLLECTION)
+                    .document(application.uid).update("status", "accepted")
+                    .addOnSuccessListener {
+                        Log.d(TAG, "Doc successfully updated!")
+                        context.toast("Request response send!")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w(TAG, "Error updating document", e)
+                    }
+            }
+
+            rejectButton.setOnClickListener {
+                firestore.collection(Configs.APPLICATION_COLLECTION)
+                    .document(application.uid).update("status", "rejected")
+                    .addOnSuccessListener {
+                        Log.d(TAG, "Doc successfully updated!")
+                        context.toast("Request response send!")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w(TAG, "Error updating document", e)
+                    }
+            }
 
 //            applyButton.setOnClickListener {
 //                var application = Application(SavedPreferences.get(context), program, "")
