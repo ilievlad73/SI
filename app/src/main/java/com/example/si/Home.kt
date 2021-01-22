@@ -68,7 +68,7 @@ class Home : AppCompatActivity() {
 
         // init programs list
         val layoutManager = LinearLayoutManager(this)
-        programsAdapter = ProgramAdapter(programs, this)
+        programsAdapter = ProgramAdapter(programs, this, firebaseFirestore)
         programs_recycler_view.layoutManager = layoutManager
         programs_recycler_view.itemAnimator = DefaultItemAnimator()
         programs_recycler_view.adapter = programsAdapter

@@ -15,4 +15,5 @@ object Configs {
     const val CREATE_PROGRAM_ERROR_REQUEST_CODE = 1231
     const val BASIC_ROLE = "user"
     const val ADMIN_ROLE = "admin"
+    const val APPLICATION_COLLECTION = "applications"
 }
