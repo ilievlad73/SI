@@ -9,5 +9,15 @@ admin.initializeApp();
 exports.customToken = functions.https.onRequest((request, response) => {
   functions.logger.info(request.body);
   functions.logger.info("Hello from custom token", { structuredData: true });
-  response.json({ data: { uid: "testsss" } });
+
+  const uid = request.body.data?.uid;
+  const additionalClaims = { isAdmin: true };
+
+  admin
+    .auth()
+    .createCustomToken(uid, additionalClaims)
+    .then((customToken) => {
+      response.json({ data: { customToken } });
+    })
+    .catch((error) => console.log("Error creating custom token:", error));
 });
