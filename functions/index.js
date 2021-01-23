@@ -7,6 +7,7 @@ admin.initializeApp();
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //
 exports.customToken = functions.https.onRequest((request, response) => {
+  functions.logger.info(request.body);
   functions.logger.info("Hello from custom token", { structuredData: true });
   response.json({ data: { uid: "testsss" } });
 });
