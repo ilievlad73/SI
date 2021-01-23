@@ -8,5 +8,5 @@ admin.initializeApp();
 //
 exports.customToken = functions.https.onRequest((request, response) => {
   functions.logger.info("Hello from custom token", { structuredData: true });
-  response.json({ uid: "testsss" });
+  response.json({ data: { uid: "testsss" } });
 });
