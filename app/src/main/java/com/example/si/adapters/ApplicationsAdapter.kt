@@ -2,6 +2,7 @@ package com.example.si.adapters
 
 import android.content.Context
 import android.content.Intent
+import android.opengl.Visibility
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -18,12 +19,14 @@ import com.example.si.admin.AdminHome
 import com.example.si.model.Application
 import com.example.si.uitl.toast
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.activity_account_management.*
 
 class ApplicationsAdapter(
     private var applications: List<Application>,
     private var context: Context,
-    private var firestore: FirebaseFirestore
+    private var firestore: FirebaseFirestore,
+    private var firebaseStorageReference: StorageReference
 ) :
     RecyclerView.Adapter<ApplicationsAdapter.ViewHolder>() {
 
@@ -52,6 +55,8 @@ class ApplicationsAdapter(
         var rejectButton: Button = view.findViewById(R.id.application_reject_button)
         var filesRecyclerView: RecyclerView =
             view.findViewById(R.id.application_files_recycler_view)
+        var status: TextView = view.findViewById(R.id.application_status_text_view)
+
 
         fun bindApplication(application: Application) {
             programName.text = "${programName.text}${application.program.name}"
@@ -59,35 +64,50 @@ class ApplicationsAdapter(
             userName.text =
                 "${userName.text}${application.user.lastName} ${application.user.firstName}"
 
-            acceptButton.setOnClickListener {
-                firestore.collection(Configs.APPLICATION_COLLECTION)
-                    .document(application.uid).update("status", "accepted")
-                    .addOnSuccessListener {
-                        Log.d(TAG, "Doc successfully updated!")
-                        context.toast("Request response send!")
-                    }
-                    .addOnFailureListener { e ->
-                        Log.w(TAG, "Error updating document", e)
-                    }
+            if (application.status.compareTo("pending") != 0) {
+                // remove buttons and add status text view
+                acceptButton.visibility = View.GONE
+                rejectButton.visibility = View.GONE
+                status.text = application.status.capitalize()
+                status.visibility = View.VISIBLE
+            } else {
+                acceptButton.setOnClickListener {
+                    firestore.collection(Configs.APPLICATION_COLLECTION)
+                        .document(application.uid).update("status", "accepted")
+                        .addOnSuccessListener {
+                            Log.d(TAG, "Doc successfully updated!")
+                            context.toast("Request response send!")
+                        }
+                        .addOnFailureListener { e ->
+                            Log.w(TAG, "Error updating document", e)
+                        }
+                }
+
+                rejectButton.setOnClickListener {
+                    firestore.collection(Configs.APPLICATION_COLLECTION)
+                        .document(application.uid).update("status", "rejected")
+                        .addOnSuccessListener {
+                            Log.d(TAG, "Doc successfully updated!")
+                            context.toast("Request response send!")
+                        }
+                        .addOnFailureListener { e ->
+                            Log.w(TAG, "Error updating document", e)
+                        }
+                }
+
             }
 
-            rejectButton.setOnClickListener {
-                firestore.collection(Configs.APPLICATION_COLLECTION)
-                    .document(application.uid).update("status", "rejected")
-                    .addOnSuccessListener {
-                        Log.d(TAG, "Doc successfully updated!")
-                        context.toast("Request response send!")
-                    }
-                    .addOnFailureListener { e ->
-                        Log.w(TAG, "Error updating document", e)
-                    }
-            }
 
             if (application.user.files?.isNotEmpty() == true) {
                 // Init files list
                 val layoutManager = LinearLayoutManager(context)
                 val filesAdapter =
-                    ApplicationFileAdapter(application.user.files!!, context, firestore)
+                    ApplicationFileAdapter(
+                        application.user.files!!,
+                        context,
+                        application,
+                        firebaseStorageReference
+                    )
                 filesRecyclerView.layoutManager = layoutManager
                 filesRecyclerView.itemAnimator = DefaultItemAnimator()
                 filesRecyclerView.adapter = filesAdapter

@@ -18,6 +18,8 @@ import com.example.si.model.Program
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.activity_admin_home.*
 import kotlinx.android.synthetic.main.activity_home.*
 
@@ -27,6 +29,7 @@ class AdminHome : AppCompatActivity() {
     private lateinit var firebaseFirestore: FirebaseFirestore;
     private var applications: ArrayList<Application> = ArrayList();
     private lateinit var applicationsAdapter: ApplicationsAdapter;
+    private lateinit var firebaseStorageReference: StorageReference;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +41,9 @@ class AdminHome : AppCompatActivity() {
 
         // Init firebase firestore
         firebaseFirestore = FirebaseFirestore.getInstance()
+
+        // Init storage
+        firebaseStorageReference = FirebaseStorage.getInstance().reference
 
         // LOGOUT BUTTON
         admin_logout_button.setOnClickListener {
@@ -72,7 +78,7 @@ class AdminHome : AppCompatActivity() {
 
         // init programs list
         val layoutManager = LinearLayoutManager(this)
-        applicationsAdapter = ApplicationsAdapter(applications, this, firebaseFirestore)
+        applicationsAdapter = ApplicationsAdapter(applications, this, firebaseFirestore, firebaseStorageReference)
         admin_applications_recycler_view.layoutManager = layoutManager
         admin_applications_recycler_view.itemAnimator = DefaultItemAnimator()
         admin_applications_recycler_view.adapter = applicationsAdapter
