@@ -16,7 +16,7 @@ exports.customToken = functions.https.onRequest((request, response) => {
   const uid = request.body.data.uid;
   const additionalClaims = { isAdmin: true };
 
-  // if(request.)
+  // if(request.auth.token.uid === uid)
 
   admin
     .auth()
