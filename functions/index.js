@@ -10,7 +10,7 @@ exports.customToken = functions.https.onRequest((request, response) => {
   functions.logger.info(request.body);
   functions.logger.info("Hello from custom token", { structuredData: true });
 
-  const uid = request.body.data?.uid;
+  const uid = request.body.data.uid;
   const additionalClaims = { isAdmin: true };
 
   admin
