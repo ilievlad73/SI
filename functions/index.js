@@ -1,7 +1,7 @@
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 
-admin.initializeApp();
+admin.initializeApp({ serviceAccountId: "firebase-adminsdk-bvr93@si-project-f9475.iam.gserviceaccount.com" });
 
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
