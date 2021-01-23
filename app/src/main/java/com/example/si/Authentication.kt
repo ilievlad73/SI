@@ -10,9 +10,16 @@ import com.example.si.`object`.SavedPreferences
 import com.example.si.admin.AdminHome
 import com.example.si.model.Admin
 import com.example.si.model.User
+import com.example.si.model.UserCustomToken
+import com.google.android.gms.tasks.Continuation
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.functions.FirebaseFunctions
+import com.google.firebase.functions.FirebaseFunctionsException
+import com.google.firebase.functions.HttpsCallableResult
 import kotlinx.android.synthetic.main.activity_authentication.*
 
 
@@ -20,6 +27,7 @@ class Authentication : AppCompatActivity() {
 
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var firebaseFirestore: FirebaseFirestore;
+    private lateinit var firebaseFunctions: FirebaseFunctions;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +39,9 @@ class Authentication : AppCompatActivity() {
 
         // Init firebase firestore
         firebaseFirestore = FirebaseFirestore.getInstance()
+
+        // Init firebase functions
+        firebaseFunctions = FirebaseFunctions.getInstance()
 
         // sign in button
         sign_in_button.setOnClickListener { _: View? ->
@@ -66,9 +77,7 @@ class Authentication : AppCompatActivity() {
                             if (SavedPreferences.isAdmin(user.role)) {
                                 val admin = doc.toObject(Admin::class.java) as Admin
                                 SavedPreferences.setAdmin(this, admin)
-                                // home
-                                startActivity(Intent(this, AdminHome::class.java))
-                                finish()
+                                signInAdminWithCustomToken(SavedPreferences.getUId(this))
                             } else {
                                 SavedPreferences.set(this, user)
                                 // maybe finish account configuration
@@ -92,8 +101,7 @@ class Authentication : AppCompatActivity() {
                     }
             } else {
                 if (SavedPreferences.isAdmin(this)) {
-                    startActivity(Intent(this, AdminHome::class.java))
-                    finish()
+                    signInAdminWithCustomToken(SavedPreferences.getUId(this))
                 } else {
                     startActivity(Intent(this, Home::class.java))
                     finish()
@@ -101,6 +109,38 @@ class Authentication : AppCompatActivity() {
 
             }
         }
+
+
+    }
+
+    private fun signInAdminWithCustomToken(token: String) {
+        customToken(token)
+            .addOnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    val e = task.exception
+                    if (e is FirebaseFunctionsException) {
+                        val code = e.code
+                        val details = e.details
+                    }
+                    Log.d("Cloud functions", "Error")
+                    // ...
+                } else {
+                    Log.d("Cloud functions", "Success")
+                    var userCustomToken = task.result!!
+                    Log.d("Cloud functions", userCustomToken.customToken)
+
+                    firebaseAuth.signInWithCustomToken(userCustomToken.customToken)
+                        .addOnCompleteListener(this) { task ->
+                            if (!task.isSuccessful) {
+                                Log.d("SignIn custom token", "Failed!")
+                            } else {
+                                Log.d("SignIn custom token", "Success!")
+                                startActivity(Intent(this, AdminHome::class.java))
+                                finish()
+                            }
+                        }
+                }
+            }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -119,5 +159,23 @@ class Authentication : AppCompatActivity() {
             Log.d(this.localClassName, "Account management activity returned successfully.")
             // this will start anyway due to on start behaviour
         }
+    }
+
+    private fun customToken(uid: String): Task<UserCustomToken> {
+        Log.d("Cloud functions", "started")
+        val data = hashMapOf("uid" to uid)
+        return firebaseFunctions
+            .getHttpsCallable("customToken")
+            .call(data)
+            .continueWith { task ->
+                // This continuation runs on either success or failure, but if the task
+                // has failed then result will throw an Exception which will be
+                // propagated down.
+//                val fieldOfStudy = document.toObject(FieldOfStudy::class.java) as FieldOfStudy;
+
+                val result = task.result?.data as HashMap<String, String>
+                val userCustomToken = UserCustomToken(result["customToken"]!!)
+                userCustomToken
+            }
     }
 }

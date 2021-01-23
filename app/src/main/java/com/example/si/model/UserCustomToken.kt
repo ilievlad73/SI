@@ -1,3 +1,3 @@
 package com.example.si.model
 
-data class UserCustomToken()
+data class UserCustomToken(val customToken: String)
