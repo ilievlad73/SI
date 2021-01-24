@@ -13,3 +13,6 @@ Admins can post programs.
 
 ## User
 User can apply to a program. User can upload files in the `{userUId}/filename.ext` bucket.
+
+## Account creation
+After the account is created the user details are submited into the firestore `users` collection under `userUId` document key.
